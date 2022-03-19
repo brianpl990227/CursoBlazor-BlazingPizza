@@ -1,14 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace BlazingPizza.UI.Server.Migrations
 {
-    public partial class first : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Address",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Line1 = table.Column<string>(type: "text", nullable: false),
+                    Line2 = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Region = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Specials",
                 columns: table => new
@@ -40,6 +59,29 @@ namespace BlazingPizza.UI.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DeliveryAddressId = table.Column<int>(type: "integer", nullable: false),
+                    DeliveryLocation_Latitude = table.Column<double>(type: "double precision", nullable: false),
+                    DeliveryLocation_Longitude = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Address_DeliveryAddressId",
+                        column: x => x.DeliveryAddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pizzas",
                 columns: table => new
                 {
@@ -52,6 +94,12 @@ namespace BlazingPizza.UI.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pizzas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pizzas_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Pizzas_Specials_SpecialId",
                         column: x => x.SpecialId,
@@ -85,6 +133,16 @@ namespace BlazingPizza.UI.Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_DeliveryAddressId",
+                table: "Orders",
+                column: "DeliveryAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pizzas_OrderId",
+                table: "Pizzas",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pizzas_SpecialId",
                 table: "Pizzas",
                 column: "SpecialId");
@@ -107,7 +165,13 @@ namespace BlazingPizza.UI.Server.Migrations
                 name: "Toppings");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Specials");
+
+            migrationBuilder.DropTable(
+                name: "Address");
         }
     }
 }

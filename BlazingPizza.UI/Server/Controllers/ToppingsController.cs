@@ -25,6 +25,12 @@ namespace BlazingPizza.UI.Server.Controllers
             return result;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<string>>Test(Test x)
+        {
+            return x.Name;
+        }
+
 
     }
 }

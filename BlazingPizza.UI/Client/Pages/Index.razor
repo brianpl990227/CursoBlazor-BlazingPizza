@@ -1,5 +1,5 @@
-﻿@page "/";
-@inject HttpClient client;
+﻿@page "/"
+@inject HttpClient client
 
  @if (Specials != null)
 {
@@ -22,6 +22,37 @@
             }
         </ul>
     </div>
+
+    <div class="sidebar">
+        @if(order.Pizzas.Any())
+        {
+            <div class="order-contents">
+                <h2>Tu orden</h2>
+                @foreach(var ConfiguredPizza in order.Pizzas)
+                {
+                    
+                    <ConfiguredPizzaItem Pizza="@ConfiguredPizza" 
+                        OnRemoved="@(() => RemoveConfiguredPizza(ConfiguredPizza))"/>
+                }
+
+            </div>            
+        }
+        else
+        {
+            <div class="empty-cart">Selecciona una pizza<br/> para empezar</div>
+        }
+
+        <div class="order-total @(order.Pizzas.Any() ? "" : "hidden")">
+            Total:
+            <span class="total-price">
+                @order.GetFormattedTotalPrice()
+            </span>
+            <button class="btn btn-warning" disabled="@(order.Pizzas.Count() == 0)" @onclick="@PlaceOrder">
+                Ordenar
+            </button>
+        </div>
+    </div>
+
 }
 else
 {
@@ -30,13 +61,14 @@ else
 
 @if (ShowingConfigurePizza)
 {
-    <ConfigurePizzaDialog pizza="ConfiguringPizza" OnCancel="CancelConfigurePizzaDialog"/>
+    <ConfigurePizzaDialog pizza="ConfiguringPizza" OnConfirm="ConfirmConfigurePizzaDialog" OnCancel="CancelConfigurePizzaDialog"/>
 }
 
 @code {
     List<PizzaSpecial> Specials;
     Pizza ConfiguringPizza;
     bool ShowingConfigurePizza;
+    Order order = new Order();
 
     protected async override Task OnInitializedAsync()
     {
@@ -60,4 +92,26 @@ else
         ConfiguringPizza = null;
         ShowingConfigurePizza = false;
     }
+
+    void ConfirmConfigurePizzaDialog()
+    {
+        order.Pizzas.Add(ConfiguringPizza);
+        ConfiguringPizza = null;
+        ShowingConfigurePizza = false;
+    }
+
+    void RemoveConfiguredPizza(Pizza pizza)
+    {
+        order.Pizzas.Remove(pizza);
+    }
+
+    async Task PlaceOrder()
+    {
+        order.DeliveryAddress = new Address();
+        order.DeliveryLocation = new LatLong();
+        var test = new Test();
+        var result = await client.PostAsJsonAsync("toppings", test);
+        order = new Order();
+    }
+
 }
