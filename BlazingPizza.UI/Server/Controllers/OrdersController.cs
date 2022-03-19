@@ -45,8 +45,6 @@ namespace BlazingPizza.UI.Server.Controllers
              await context.SaveChangesAsync();
 
              return order.OrderId;
-
-
         }
 
 
