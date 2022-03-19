@@ -2,7 +2,6 @@
 using BlazingPizza.UI.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SharedDomain;
 
 namespace BlazingPizza.UI.Server.Controllers
 {
