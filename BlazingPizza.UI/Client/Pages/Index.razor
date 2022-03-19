@@ -107,10 +107,8 @@ else
 
     async Task PlaceOrder()
     {
-        order.DeliveryAddress = new Address();
-        order.DeliveryLocation = new LatLong();
-        var test = new Test();
-        var result = await client.PostAsJsonAsync("toppings", test);
+       
+        var result = await client.PostAsJsonAsync("orders", order);
         order = new Order();
     }
 

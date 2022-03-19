@@ -8,7 +8,7 @@ namespace BlazingPizza.UI.Shared
 {
     public class Test
     {
-        public string Name { get; set; }
-        public string Line1 { get; set; }
+        public string? Name { get; set; }
+        public string? Line1 { get; set; }
     }
 }

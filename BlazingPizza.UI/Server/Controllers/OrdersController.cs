@@ -2,10 +2,11 @@
 using BlazingPizza.UI.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SharedDomain;
 
 namespace BlazingPizza.UI.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -25,12 +26,9 @@ namespace BlazingPizza.UI.Server.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<int>> PlaceOrder(Test test)
+        public async Task<ActionResult<int>> PlaceOrder(Order order)
         {
-            test.Name = "brian";
-
-            /*
-             order.CreatedTime = DateTime.Now;
+             order.CreatedTime = DateTime.UtcNow;
              order.DeliveryLocation = new LatLong(19.043679206924864, -98.19811254438645);
 
              foreach(var pizza in order.Pizzas)
@@ -47,9 +45,8 @@ namespace BlazingPizza.UI.Server.Controllers
              context.Orders.Attach(order);
              await context.SaveChangesAsync();
 
-             return order.OrderId;*/
+             return order.OrderId;
 
-            return 5;
 
         }
 
