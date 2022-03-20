@@ -1,8 +1,65 @@
 ﻿@page "/myorders"
+@inject HttpClient client
+
 <div class="main">
-    Mis ordenes estaran aqui
+    @if (OrderWithStatus == null)
+    {
+        <text>Cargando</text>
+    }
+    else if (OrderWithStatus.Count == 0)
+    {
+        <h2>No se ha realizado ninguna orden</h2>
+        <a class="btn alert-success" href="">Ordena alguna pizza</a>
+
+    }
+    else
+    {
+        <div class="list-group orders-list">
+            @foreach (var Item in OrderWithStatus)
+            {
+                <div class="list-group-item">
+                    <div class="col">
+
+                        <h5>@Item.Order.CreatedTime.Value.ToLongDateString()</h5>
+                        Pizzas:
+                        <strong>@Item.Order.Pizzas.Count</strong>
+                        Precio total:
+                        <strong>@Item.Order.GetFormattedTotalPrice()</strong>
+                    </div>
+                    <div class="col">
+                        Estado: <strong>@Item.StatusText</strong>
+                    </div>
+                    <div class="col text-right">
+                        <a href="myorders/@Item.Order.OrderId" class="btn alert-success">
+                            Rastrear
+                        </a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
 </div>
 
 @code {
+    List<OrderWithStatus> OrderWithStatus;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        OrderWithStatus = await client.GetFromJsonAsync<List<OrderWithStatus>>("orders");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -2,6 +2,7 @@
 using BlazingPizza.UI.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazingPizza.UI.Server.Controllers
 {
@@ -45,6 +46,20 @@ namespace BlazingPizza.UI.Server.Controllers
              await context.SaveChangesAsync();
 
              return order.OrderId;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<OrderWithStatus>>> GetOrders ()
+        {
+            var orders = await context.Orders
+                .Include(x => x.DeliveryLocation)
+                .Include(x => x.Pizzas).ThenInclude(x => x.Special)
+                .Include(x => x.Pizzas).ThenInclude(x => x.Toppings)
+                .ThenInclude(x => x.Topping)
+                .OrderByDescending(x => x.CreatedTime)
+                .ToListAsync();
+
+            return orders.Select(x => OrderWithStatus.FromOrder(x)).ToList(); 
         }
 
 
