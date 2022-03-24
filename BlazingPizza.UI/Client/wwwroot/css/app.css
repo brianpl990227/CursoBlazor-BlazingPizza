@@ -207,7 +207,6 @@ body {
         border-left: 0.6rem solid transparent;
         border-right: 0.6rem solid transparent;
         border-top: 1rem solid rgb(205,51,51);
-        bac
     }
 
 form {
@@ -579,4 +578,46 @@ input[type="range"] {
 
     .text-right{
         text-align: right;
+    }
+
+    .track-order{
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .track-order > div{
+        overflow-y: hidden;
+    }
+
+    .track-order-title{
+        background-color: #eee;
+        display: flex;
+        align-items: center;
+        padding: 1rem 3rem;
+    }
+
+        .track-order-title h2 {
+            display: inline-block;
+            width: 100%;
+            color: #c03939;
+            font-size: 1rem;
+            font-weight: 300;
+            margin: 0;
+            font-family: Bahnschrift,Arial, Helvetica, sans-serif;
+            text-transform: uppercase;
+        }
+
+.status-detail {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+}
+
+    .track-order-body{
+        flex-grow: 1;
+        display: flex;
+
     }
