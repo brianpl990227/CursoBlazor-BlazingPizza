@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject HttpClient client
+@inject NavigationManager navigation
 
  @if (Specials != null)
 {
@@ -107,9 +108,13 @@ else
 
     async Task PlaceOrder()
     {
-       
-        var result = await client.PostAsJsonAsync("orders", order);
+
+        var response = await client.PostAsJsonAsync("orders", order);
+        var NewOrderId = await response.Content.ReadFromJsonAsync<int>();
         order = new Order();
+
+        navigation.NavigateTo($"myorders/{NewOrderId}");
+
     }
 
 }

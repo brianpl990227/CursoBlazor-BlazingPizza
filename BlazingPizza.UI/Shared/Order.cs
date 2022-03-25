@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,5 +17,6 @@ namespace BlazingPizza.UI.Shared
         public List<Pizza>? Pizzas { get; set; } = new List<Pizza>();
         public decimal GetTotalPrice() => Pizzas.Sum(x => x.GetTotalPrice());
         public string GetFormattedTotalPrice() => GetTotalPrice().ToString("0.00");
+        public string GetFormattedCreatedTime() => CreatedTime.Value.ToString("D", new CultureInfo("es"));
     }
 }
