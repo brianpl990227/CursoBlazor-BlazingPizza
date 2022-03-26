@@ -627,3 +627,68 @@ input[type="range"] {
     padding: 1.5rem 3rem;
     flex-grow: 1;
 }
+
+.checkout-cols{
+    display: flex;
+
+}
+
+.checkout-cols h4{
+    margin-bottom: 1.5rem;
+
+}
+
+.checkout-cols > div{
+    flex: 1;
+    margin: 1rem;
+    border: 1px solid #ddd;
+    background-color: rgba(0,0,0,0.3);
+    padding: 1.25rem 1rem;
+}
+
+.checkout-cols > div:first-child{
+    margin-left: 0;
+}
+
+.checkout-cols > div:last-child{
+    margin-right: 0;
+}
+
+.checkout-button{
+    margin: auto;
+    display: block;
+    font-weight: 300;
+    border-radius: 20px;
+    padding: 0.4rem 1.2rem;
+}
+
+.form-field{
+    display: flex;
+    margin: 0.5rem;
+}
+
+.form-field label{
+    width: 8rem;
+}
+
+.form-field > div{
+    flex-grow: 1;
+}
+
+.form-field input{
+    width: 100%;
+}
+
+.valid.modified:not([type=checkbox])
+{
+    outline: 1px solid #26b050;
+}
+
+.invalid{
+    outline: 1px solid red
+}
+
+.validation-message{
+    color: red;
+}
+
