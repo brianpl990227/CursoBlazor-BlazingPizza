@@ -1,5 +1,6 @@
 using BlazingPizza.UI.Server.Data;
 using BlazingPizza.UI.Server.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,21 @@ builder.Services.AddDbContext<PizzaStoreContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Dev"));
 });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie().AddTwitter(TwitterOptions =>
+{
 
+    TwitterOptions.CallbackPath = "/";
+    TwitterOptions.ConsumerKey = "8FIkPymD0wWvUkNAFPwiC0km2";
+    TwitterOptions.ConsumerSecret = "ka9qXYOCcICOCiLoI76uwbMVoDEmhzA3TmK8N5iWg9GrjEWt37";
+    TwitterOptions.Events.OnRemoteFailure = context =>
+    {
+        context.HandleResponse();
+        return context.Response.WriteAsync("<script>window.close();</script>");
+    };
+});
 
 
 var app = builder.Build();
@@ -38,6 +53,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();

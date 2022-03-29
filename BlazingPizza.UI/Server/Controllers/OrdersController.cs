@@ -1,5 +1,6 @@
 ﻿using BlazingPizza.UI.Server.Data;
 using BlazingPizza.UI.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace BlazingPizza.UI.Server.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly PizzaStoreContext context;
@@ -16,14 +18,6 @@ namespace BlazingPizza.UI.Server.Controllers
         {
             context = _context;
         }
-
-
-        [HttpPost("test")]
-        public ActionResult Test(int x)
-        {
-            return Ok();
-        }
-
 
         [HttpPost]
         public async Task<ActionResult<int>> PlaceOrder(Order order)
@@ -49,7 +43,7 @@ namespace BlazingPizza.UI.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<OrderWithStatus>>> GetOrders ()
+        public async Task<ActionResult<List<OrderWithStatus>>> GetOrders()
         {
             var orders = await context.Orders
                 .Include(x => x.DeliveryLocation)

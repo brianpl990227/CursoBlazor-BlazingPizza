@@ -15,16 +15,18 @@
                 <AddressEditor Address="OrderState.order.DeliveryAddress" />
             </div>
         </div>
-        <button type="submit" class="checkout-button btn btn-warning">Aceptar la orden</button>
+        <button type="submit" disabled="@disabled" class="checkout-button btn btn-warning">Aceptar la orden</button>
         <DataAnnotationsValidator />
     </EditForm>
 
 </div>
 
 @code {
+    public bool disabled = false;
+
     async Task PlaceOrder()
     {
-
+        disabled = true;
         var response = await Client.PostAsJsonAsync("orders", OrderState.order);
         var NewOrderId = await response.Content.ReadFromJsonAsync<int>();
         OrderState.ResetOrder();
