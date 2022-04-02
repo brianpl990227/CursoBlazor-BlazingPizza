@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BlazingPizza.UI.Server.Controllers
 {
@@ -24,7 +25,7 @@ namespace BlazingPizza.UI.Server.Controllers
         {
              order.CreatedTime = DateTime.UtcNow;
              order.DeliveryLocation = new LatLong(19.043679206924864, -98.19811254438645);
-
+             order.UserId = GetUserId();
              foreach(var pizza in order.Pizzas)
              {
                  pizza.SpecialId = pizza.Special.Id;
@@ -46,6 +47,7 @@ namespace BlazingPizza.UI.Server.Controllers
         public async Task<ActionResult<List<OrderWithStatus>>> GetOrders()
         {
             var orders = await context.Orders
+                .Where(x => x.UserId == GetUserId())
                 .Include(x => x.DeliveryLocation)
                 .Include(x => x.Pizzas).ThenInclude(x => x.Special)
                 .Include(x => x.Pizzas).ThenInclude(x => x.Toppings)
@@ -59,7 +61,9 @@ namespace BlazingPizza.UI.Server.Controllers
         [HttpGet("{orderID}")]
         public async Task<ActionResult<OrderWithStatus>> GetOrderWithStatus(int orderID)
         {
-            var order = await context.Orders.Where(x => x.OrderId == orderID).Include(x => x.DeliveryLocation)
+            var order = await context.Orders
+                .Where(x=> x.UserId == GetUserId())
+                .Where(x => x.OrderId == orderID).Include(x => x.DeliveryLocation)
                 .Include(x => x.Pizzas).ThenInclude(x => x.Special)
                 .Include(x=> x.Pizzas).ThenInclude(x => x.Toppings).ThenInclude(x => x.Topping)
                 .FirstOrDefaultAsync();
@@ -69,6 +73,11 @@ namespace BlazingPizza.UI.Server.Controllers
             else
                 return OrderWithStatus.FromOrder(order);
 
+        }
+
+        private string GetUserId()
+        {
+            return HttpContext.User.FindFirst(ClaimTypes.Name).Value;
         }
 
 

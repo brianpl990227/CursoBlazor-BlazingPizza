@@ -23,7 +23,7 @@ namespace BlazingPizza.UI.Server.Controllers
         {
             if(string.IsNullOrEmpty(redirectUri) || !Url.IsLocalUrl(redirectUri))
             {
-                redirectUri = "/";
+                redirectUri = "/home";
             }
             await HttpContext.ChallengeAsync(TwitterDefaults.AuthenticationScheme, new AuthenticationProperties() { RedirectUri = redirectUri });
         }
@@ -32,13 +32,9 @@ namespace BlazingPizza.UI.Server.Controllers
         public async Task<ActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("~/");
+            return Redirect("~/home");
         }
 
-        [HttpGet("signin-twitter")] //https://localhost:44323/signin-twitter
-        public ActionResult Test()
-        {
-            return Ok("Estoy ok");
-        }
+
     }
 }

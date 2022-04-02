@@ -1,7 +1,18 @@
 ﻿<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <div class="main">
+                        <h2>No has iniciado sesión</h2>
+                        <p>Para continuar por favor inicia sesión</p>
+                        <a href="user/signin" class="btn btn-danger">Iniciar sesión</a>
+                    </div>
+                </NotAuthorized>
+                <Authorizing>
+                    Espera por favor...
+                </Authorizing>
+            </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
