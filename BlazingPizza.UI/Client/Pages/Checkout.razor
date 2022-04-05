@@ -14,11 +14,11 @@
                 <div class="checkout-cols">
                     <div class="checkout-order-details">
                         <h4>Revisar la orden</h4>
-                        <OrderReview  Order="OrderState.order" />
+                        <OrderReview Order="OrderState.order" />
                     </div>
                     <div>
                         <h4>Enviar a:</h4>
-                        <AddressEditor  Address="OrderState.order.DeliveryAddress" />
+                        <AddressEditor Address="OrderState.order.DeliveryAddress" />
                     </div>
                 </div>
                 <button type="submit" disabled="@disabled" class="checkout-button btn btn-warning">Aceptar la orden</button>
