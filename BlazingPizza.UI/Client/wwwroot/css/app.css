@@ -744,3 +744,7 @@ a.sign-in {
     text-decoration: none;
 }
 
+.track-order-map{
+    width: 50%;
+    flex-shrink: 0;
+}

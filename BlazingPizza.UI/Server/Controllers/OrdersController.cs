@@ -23,24 +23,24 @@ namespace BlazingPizza.UI.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> PlaceOrder(Order order)
         {
-             order.CreatedTime = DateTime.UtcNow;
-             order.DeliveryLocation = new LatLong(19.043679206924864, -98.19811254438645);
-             order.UserId = GetUserId();
-             foreach(var pizza in order.Pizzas)
-             {
-                 pizza.SpecialId = pizza.Special.Id;
-                 pizza.Special = null;
-                 foreach(var topping in pizza.Toppings)
-                 {
-                     topping.ToppingId = topping.Topping.Id;
-                     topping.Topping = null;
-                 }
-             }
+            order.CreatedTime = DateTime.UtcNow;
+            order.DeliveryLocation = new LatLong(23.104527825510438, -82.36132086531593);
+            order.UserId = GetUserId();
+            foreach (var pizza in order.Pizzas)
+            {
+                pizza.SpecialId = pizza.Special.Id;
+                pizza.Special = null;
+                foreach (var topping in pizza.Toppings)
+                {
+                    topping.ToppingId = topping.Topping.Id;
+                    topping.Topping = null;
+                }
+            }
 
-             context.Orders.Attach(order);
-             await context.SaveChangesAsync();
+            context.Orders.Attach(order);
+            await context.SaveChangesAsync();
 
-             return order.OrderId;
+            return order.OrderId;
         }
 
         [HttpGet]
@@ -55,17 +55,17 @@ namespace BlazingPizza.UI.Server.Controllers
                 .OrderByDescending(x => x.CreatedTime)
                 .ToListAsync();
 
-            return orders.Select(x => OrderWithStatus.FromOrder(x)).ToList(); 
+            return orders.Select(x => OrderWithStatus.FromOrder(x)).ToList();
         }
 
         [HttpGet("{orderID}")]
         public async Task<ActionResult<OrderWithStatus>> GetOrderWithStatus(int orderID)
         {
             var order = await context.Orders
-                .Where(x=> x.UserId == GetUserId())
+                .Where(x => x.UserId == GetUserId())
                 .Where(x => x.OrderId == orderID).Include(x => x.DeliveryLocation)
                 .Include(x => x.Pizzas).ThenInclude(x => x.Special)
-                .Include(x=> x.Pizzas).ThenInclude(x => x.Toppings).ThenInclude(x => x.Topping)
+                .Include(x => x.Pizzas).ThenInclude(x => x.Toppings).ThenInclude(x => x.Topping)
                 .FirstOrDefaultAsync();
 
             if (order == null)

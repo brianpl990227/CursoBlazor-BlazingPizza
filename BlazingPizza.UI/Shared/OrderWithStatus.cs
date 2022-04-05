@@ -14,9 +14,10 @@ namespace BlazingPizza.UI.Shared
         public Order Order { get; set; }
         public string StatusText { get; set; }
         public List<Marker> MapMarkers { get; set; }
+
         public static OrderWithStatus FromOrder(Order Order)
         {
-            string message ="";
+            string message = "";
             List<Marker> markers = new List<Marker>();
             var DispatchTime = Order.CreatedTime.Value.Add(PreparationDuration);
 
@@ -33,7 +34,7 @@ namespace BlazingPizza.UI.Shared
                 message = "En camino";
                 var StartPosition = ComputeStartPosition(Order);
                 var ProportionOfDeliveryCompleted =
-                    Math.Min(1, (DateTime.Now - DispatchTime).TotalMilliseconds / DeliveryDuration.TotalMilliseconds);
+                    Math.Min(1, (DateTime.UtcNow - DispatchTime).TotalMilliseconds / DeliveryDuration.TotalMilliseconds);
                 var DriverPosition = LatLong.Interpolate(StartPosition, Order.DeliveryLocation, ProportionOfDeliveryCompleted);
                 markers = new List<Marker>
                 {
@@ -46,7 +47,7 @@ namespace BlazingPizza.UI.Shared
                 message = "Entregado";
                 markers = new List<Marker>()
                 {
-                    ToMapMarker("Usted", Order.DeliveryLocation, showPopup: true)
+                    ToMapMarker("Ubicación de entrega", Order.DeliveryLocation, showPopup: true)
                 };
             }
 
@@ -69,8 +70,7 @@ namespace BlazingPizza.UI.Shared
 
         static LatLong ComputeStartPosition(Order order)
         {
-            int x = int.Parse(order.OrderId.ToString());
-            var Random = new Random(x);
+            var Random = new Random(order.OrderId);
             var Distance = 0.01 + Random.NextDouble() * 0.02;
             var Angle = Random.NextDouble() * Math.PI * 2;
             var Offset = (Distance * Math.Cos(Angle), Distance * Math.Sin(Angle));
